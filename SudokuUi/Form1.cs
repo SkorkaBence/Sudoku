@@ -26,17 +26,19 @@ namespace SudokuUi {
             btns = new Button[9, 9];
             solvedCell = new bool[9, 9];
 
-            for (int x = 0; x < 9; x++) {
-                for (int y = 0; y < 9; y++) {
-                    Button btn = new Button();
-                    btn.Parent = sudokuPanel;
-                    btn.Width = 40;
-                    btn.Height = 40;
-                    btn.Top = y * 45;
-                    btn.Left = x * 45;
-                    btn.Tag = new int [] { x, y};
+            for (int y = 0; y < 9; y++) {
+                for (int x = 0; x < 9; x++) {
+                    Button btn = new Button() {
+                        Parent = sudokuPanel,
+                        Width = 40,
+                        Height = 40,
+                        Top = y * 45,
+                        Left = x * 45,
+                        Tag = new int[] { x, y },
+                        Font = new Font(FontFamily.GenericSansSerif, 20)
+                    };
                     btn.Click += Btn_Click;
-                    btn.Font = new Font(FontFamily.GenericSansSerif, 20);
+                    btn.KeyDown += Btn_KeyDown;
                     btns[x, y] = btn;
 
                     if (x % 3 == 2 && y % 3 == 2 && x != 8 && y != 8) {
@@ -59,6 +61,21 @@ namespace SudokuUi {
                     }
                 }
             }
+            ReDraw();
+        }
+
+        private void Btn_KeyDown(object sender, KeyEventArgs e) {
+            var num = 0;
+            if (e.KeyValue >= 48 && e.KeyValue <= 57) {
+                num = e.KeyValue - 48;
+            } else if (e.KeyValue >= 96 && e.KeyValue <= 105) {
+                num = e.KeyValue - 96;
+            } else {
+                return;
+            }
+
+            int[] tag = (int[])((Button)sender).Tag;
+            sud.SetCell(tag[0], tag[1], num);
             ReDraw();
         }
 
